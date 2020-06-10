@@ -1,0 +1,13 @@
+{
+  "restartable": "rs",
+  "ignore": [
+    ".git",
+    "node_modules",
+    "error.log"
+  ],
+  "exec": "ts-node ./src/index.ts",
+  "events": {},
+  "watch": ["./src"],
+  "ext": "ts tsx js json",
+  "legacy-watch": false
+}

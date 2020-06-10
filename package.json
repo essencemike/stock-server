@@ -1,0 +1,67 @@
+{
+  "name": "stock-server",
+  "version": "1.0.0",
+  "description": "stock server with typescript and koa",
+  "main": "index.ts",
+  "scripts": {
+    "start": "npm run serve",
+    "pm2:start": "pm2 start dist/index.js",
+    "serve": "node dist/index.js",
+    "dev": "nodemon",
+    "build": "npm run clean && npm run lint && npm run build:ts",
+    "build:ts": "tsc",
+    "lint": "tslint -c tslint.json -p tsconfig.json",
+    "clean": "rm -rf dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/essencemike/stock-server.git"
+  },
+  "keywords": [
+    "blog",
+    "koa",
+    "typescript",
+    "server"
+  ],
+  "author": "IMike",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/essencemike/stock-server/issues"
+  },
+  "homepage": "https://github.com/essencemike/stcok-server#readme",
+  "devDependencies": {
+    "@types/glob": "^5.0.35",
+    "@types/jsonwebtoken": "^7.2.7",
+    "@types/kcors": "^2.2.3",
+    "@types/koa": "^2.0.46",
+    "@types/koa-bodyparser": "^4.2.0",
+    "@types/koa-compress": "^2.0.8",
+    "@types/koa-jwt": "^3.3.0",
+    "@types/koa-router": "^7.0.28",
+    "@types/md5": "^2.1.32",
+    "@types/mongoose": "^5.0.16",
+    "chalk": "^2.4.1",
+    "nodemon": "^2.0.4",
+    "ts-node": "^6.1.1",
+    "tslint": "^5.10.0",
+    "typescript": "^2.9.2"
+  },
+  "dependencies": {
+    "axios": "^0.19.2",
+    "cheerio": "^1.0.0-rc.3",
+    "csv-parse": "^4.10.1",
+    "http-https": "^1.0.0",
+    "iconv-lite": "^0.5.2",
+    "jsonwebtoken": "^8.3.0",
+    "kcors": "^2.2.1",
+    "koa": "^2.5.1",
+    "koa-bodyparser": "^4.2.1",
+    "koa-compress": "^3.0.0",
+    "koa-jwt": "^3.3.2",
+    "koa-router": "^7.4.0",
+    "md5": "^2.2.1",
+    "moment": "^2.22.2",
+    "mongoose": "^5.1.5",
+    "tracer": "^0.9.0"
+  }
+}
