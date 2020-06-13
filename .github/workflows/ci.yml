@@ -1,0 +1,71 @@
+name: deploy to aliyun
+on:
+  push: # 当发生推送事件时
+    tags: # 当推送 tag 时
+      - v*
+    branches: # 当推送分支时
+      - master
+  pull_request: # 当发生合并事件时
+    branches:
+      - master
+
+env:
+  MY_V2_SERVER_PRIVATE_KEY: ${{ secrets.MY_V2_SERVER_PRIVATE_KEY }} # 服务器私钥
+  MY_V2_USER: ${{ secrets.MY_V2_USER }}
+  MY_V2_IP: ${{ secrets.MY_V2_IP }}
+  cache-name: 2020
+
+jobs:
+  build-production: # 构建安装依赖，构建文件
+    name: Build 
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2 # 拉去分支
+
+    - name: Cache node modules #缓存依赖
+      uses: actions/cache@v1
+      env:
+        cache-name: cache-node-modules
+      with:
+        path: ./node_modules # npm cache files are stored in `~/.npm` on Linux/macOS
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('./package.json') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
+
+    - name: Install Dependencies
+      run: npm i
+
+    - name: Build
+      run: npm run build
+
+    - name: Upload result
+      uses: actions/upload-artifact@v1
+      with:
+        name: dist
+        path: dist
+
+  deploy:
+    name: Deploy
+    needs: build-production
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download result
+      uses: actions/download-artifact@v1
+      with:
+        name: dist
+
+    - name: rsync deployments
+      uses: contention/rsync-deployments@v1.0.0
+      env:
+        DEPLOY_KEY: ${{ secrets.MY_V2_SERVER_PRIVATE_KEY }}
+      with:
+        args: "-avzr --delete ${{ env.MY_V2_USER }}@${{ env.MY_V2_IP }}:~/stock/"
+    # - name: ls -a via ssh
+    #   uses: garygrossgarten/github-action-ssh@release
+    #   with:
+    #     command: ls -a
+    #     host: ${{ env.MY_V2_IP }}
+    #     username: ${{ env.MY_V2_USER }}
+    #     privateKey: ${{ secrets.MY_V2_SERVER_PRIVATE_KEY}}
