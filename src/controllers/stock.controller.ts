@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { Get, required, Controller, log } from '../middlewares/router';
+import { Get, required, Controller, log, Post } from '../middlewares/router';
 
 import { getPagesAsync as Crawl } from '../lib/utils';
 
@@ -697,6 +697,29 @@ export default class StockController {
 
     ctx.success({
       msg: '查询成功！',
+      data,
+    });
+  }
+
+  @Post(':code')
+  @log
+  async getStockMarketData(ctx: any) {
+    const code = ctx.params.code;
+    const prefix = code.startsWith('6') ? 'SH' : 'SZ';
+    const { start_date, end_date, period } = ctx.request.body;
+    const data = await axios.post('http://api.tushare.pro', {
+      api_name: period,
+      token: '7c986053dc9823f692f7f74f38e13ae81645a8c991d479125aad9eea',
+      params: {
+        ts_code: `${code}.${prefix}`,
+        start_date,
+        end_date,
+      },
+      fields: 'trade_date,open,high,low,close,vol',
+    }).then((res: any) => res.data.data);
+
+    ctx.success({
+      msg: '查询成功',
       data,
     });
   }
